@@ -1,7 +1,10 @@
 import { Strategy as GitHubStrategy } from 'passport-github2';
+import { VerifyCallback } from 'passport-oauth2';
 import { PassportStrategy } from '../../interfaces/index';
 
 const githubStrategy: GitHubStrategy = new GitHubStrategy(
+    //remember the whole env thing for clientid and clientsecret
+    
     {
         clientID: "",
         clientSecret: "",
@@ -9,8 +12,9 @@ const githubStrategy: GitHubStrategy = new GitHubStrategy(
         passReqToCallback: true,
     },
     
-    /* FIX ME 😭 */
-    async (req: any, accessToken: any, refreshToken: any, profile: any, done: any) => {},
+    async (req: Express.Request, accessToken: string, refreshToken: string, profile: any, done: VerifyCallback) => {
+        console.log(profile);
+    },
 );
 
 const passportGitHubStrategy: PassportStrategy = {
