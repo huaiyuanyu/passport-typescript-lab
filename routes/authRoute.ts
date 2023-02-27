@@ -23,7 +23,7 @@ router.post(
     //can get that message from req.session.messages
     //typescript doesn't recognize .messages though, so you need to do something like...
     //(req.session as any).messages
-    /* FIX ME: 😭 failureMsg needed when login fails */
+
   })
 );
 
