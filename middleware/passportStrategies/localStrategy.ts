@@ -10,11 +10,18 @@ const localStrategy = new LocalStrategy(
   },
   (email, password, done) => {
     const user = getUserByEmailIdAndPassword(email, password);
-    return user
-      ? done(null, user)
-      : done(null, false, {
-          message: "Your login details are not valid. Please try again",
-        });
+
+    if(user === "email") {
+      done(null, false, {
+        message: `No user found with email: ${email}`,
+      })
+    } else if(user) {
+      done(null, user)
+    } else {
+      done(null, false, {
+        message: "Your password is invalid."
+      })
+    }
   }
 );
 

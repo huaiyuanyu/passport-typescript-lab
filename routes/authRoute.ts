@@ -5,7 +5,13 @@ import { forwardAuthenticated } from "../middleware/checkAuth";
 const router = express.Router();
 
 router.get("/login", forwardAuthenticated, (req, res) => {
-  res.render("login");
+  let messages:string[] | null = null;
+  if((req.session as any).messages) {
+    messages = (req.session as any).messages;
+    (req.session as any).messages = null;
+  }
+  console.log(messages);
+  res.render("login", {failureMsg: messages});
 })
 
 router.post(
@@ -13,6 +19,10 @@ router.post(
   passport.authenticate("local", {
     successRedirect: "/dashboard",
     failureRedirect: "/auth/login",
+    failureMessage: true,
+    //can get that message from req.session.messages
+    //typescript doesn't recognize .messages though, so you need to do something like...
+    //(req.session as any).messages
     /* FIX ME: 😭 failureMsg needed when login fails */
   })
 );
