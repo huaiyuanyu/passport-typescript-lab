@@ -20,35 +20,28 @@ const localStrategy = new LocalStrategy(
   //by default though, local uses usernames. Thus, you need to feed a specific function into user in order to correctly format it for usage. That's what the getUserByEmailAndPassword() is for.
   (email, password, done) => {
     const user = getUserByEmailIdAndPassword(email, password);
-    return user
-    //? and : are basically a shorter version of if-else, while the 'return user' is the boolean statement that controls the ? and :
-    //the done as well is basically a callback that works similarly to (err,data)
-      ? done(null, user)
-      : done(null, false, {
-          message: "Your login details are not valid. Please try again",
-        });
+
+    if(user === "email") {
+      done(null, false, {
+        message: `No user found with email: ${email}`,
+      })
+    } else if(user) {
+      done(null, user)
+    } else {
+      done(null, false, {
+        message: "Your password is invalid."
+      })
+    }
   }
 );
 
-/*
-FIX ME (types) 😭
-*/
-//this function is what is used to create a new session for the user
-//you want to store one thing inside the session. In this case, it's the user.id from the fake-db which you got through the whole getUserByEmailAndPassword() that you used before.
-//also, what it does is take your req.user and make it equal to user.
-//now, you can call up req.user whenever you want and query all the information from req.user
-passport.serializeUser(function (user: any, done: any) {
-  done(null, user.id);
-});
 
-/*
-FIX ME (types) 😭
-*/
-//receives the user id that you placed inside the session object
-//when you take the user and place it in the done(), it updates req.user to have the correct user.
-//this runs before any of your other request run AFTER a user gets into a session, and it guarantees that we always have the most up-to-date user info for the user
-//fundamentally counteracts the "stale session" problem where req.user is out of date with consideration to what info is inside the server's database
-passport.deserializeUser(function (id: any, done: any) {
+passport.serializeUser(function (user: Express.User, done: (err: any, id?: number) => void) {
+  done(null, (user as any).id);
+});
+//easiest way to figure out how to type the function is via ctrl + click
+
+passport.deserializeUser(function (id: string, done: (err: any, user?: Express.User | false | null) => void) {
   let user = getUserById(id);
   if (user) {
     done(null, user);

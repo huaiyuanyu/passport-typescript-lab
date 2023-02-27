@@ -7,7 +7,13 @@ import { forwardAuthenticated } from "../middleware/checkAuth";
 const router = express.Router();
 
 router.get("/login", forwardAuthenticated, (req, res) => {
-  res.render("login");
+  let messages:string[] | null = null;
+  if((req.session as any).messages) {
+    messages = (req.session as any).messages;
+    (req.session as any).messages = null;
+  }
+  console.log(messages);
+  res.render("login", {failureMsg: messages});
 })
 
 //authenticate is fundamentally going to serve as a 'local middleware' function
@@ -21,7 +27,11 @@ router.post(
   passport.authenticate("local", {
     successRedirect: "/dashboard",
     failureRedirect: "/auth/login",
-    /* FIX ME: 😭 failureMsg needed when login fails */
+    failureMessage: true,
+    //can get that message from req.session.messages
+    //typescript doesn't recognize .messages though, so you need to do something like...
+    //(req.session as any).messages
+
   })
 );
 
