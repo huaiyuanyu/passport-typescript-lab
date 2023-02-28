@@ -30,6 +30,7 @@ const addGitHubUserToDatabase = (profile: any) => {
     name: profile.username,
     email: "",
     password: "",
+    role: "user"
   }
 
   database.push(user);

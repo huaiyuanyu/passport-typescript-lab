@@ -16,4 +16,10 @@ router.get("/dashboard", ensureAuthenticated, (req, res) => {
   });
 });
 
+router.get("/admin", ensureAuthenticated, (req, res) => {
+  res.render("admin", {
+    user: req.user,
+  })
+} )
+
 export default router;
