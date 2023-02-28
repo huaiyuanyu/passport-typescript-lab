@@ -1,6 +1,7 @@
 import { Strategy as GitHubStrategy } from 'passport-github2';
 import { VerifyCallback } from 'passport-oauth2';
 import { PassportStrategy } from '../../interfaces/index';
+import { addGitHubUserToDatabase } from '../../controllers/userController';
 
 import * as dotenv from "dotenv";
 dotenv.config();
@@ -17,7 +18,11 @@ const githubStrategy: GitHubStrategy = new GitHubStrategy(
     },
     
     async (req: Express.Request, accessToken: string, refreshToken: string, profile: any, done: VerifyCallback) => {
-        console.log(profile);
+        console.log("async works!")
+        console.log(profile.username);
+        console.log(accessToken)
+        addGitHubUserToDatabase(profile);
+        done(null, profile);
     },
 );
 

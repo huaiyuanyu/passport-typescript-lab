@@ -1,4 +1,4 @@
-import {userModel} from "../models/userModel";
+import {userModel, database} from "../models/userModel";
 
 const getUserByEmailIdAndPassword = (email: string, password: string) => {
   let user = userModel.findOne(email);
@@ -24,7 +24,20 @@ function isUserValid(user: any, password: string) {
   return user.password === password;
 }
 
+const addGitHubUserToDatabase = (profile: any) => {
+  const user = {
+    id: profile.id,
+    name: profile.username,
+    email: "",
+    password: "",
+  }
+
+  database.push(user);
+
+}
+
 export {
   getUserByEmailIdAndPassword,
   getUserById,
+  addGitHubUserToDatabase
 };
