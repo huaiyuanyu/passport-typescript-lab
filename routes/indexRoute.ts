@@ -17,9 +17,13 @@ router.get("/dashboard", ensureAuthenticated, (req, res) => {
 });
 
 router.get("/admin", ensureAuthenticated, (req, res) => {
-  res.render("admin", {
-    user: req.user,
-  })
+  if((req.user as any).role === "admin") {
+    res.render("admin", {
+      user: req.user,
+    })
+  } else {
+    res.redirect("/dashboard");
+  }
 } )
 
 export default router;
